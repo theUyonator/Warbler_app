@@ -30,7 +30,7 @@ from app import app
 db.create_all()
 
 
-class UserModelTestCase(TestCase):
+class   MessageModelTestCase(TestCase):
     """Test views for messages."""
 
     def setUp(self):
@@ -94,7 +94,7 @@ class UserModelTestCase(TestCase):
         uid1 = 2222
         u.id = uid1
 
-        db.session.add(m1, m2)
+        db.session.add_all([m1, m2])
         db.session.commit()
 
         u.likes.append(m1)

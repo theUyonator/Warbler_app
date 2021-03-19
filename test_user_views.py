@@ -148,7 +148,7 @@ class UserViewsTestCase(TestCase):
         m2 = Message(text="I get my peaches out in Georgia", user_id=self.testuser_id)
         m3 = Message(id=1984, text="real recognize real", user_id=self.u1id )
 
-        db.session.add(m1, m2, m3)
+        db.session.add_all([m1, m2, m3])
         db.session.commit()
 
         l1 =  Likes(user_id=self.testuser_id, message_id=1984)
@@ -198,7 +198,7 @@ class UserViewsTestCase(TestCase):
             resp = c.post("/messages/2000/like", follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
 
-            likes = Likes.query.filter(likes.message_id == 2000).all()
+            likes = Likes.query.filter(Likes.message_id == 2000).all()
             self.assertEqual(len(likes), 1)
             self.assertEqual(likes[0].user_id, self.testuser_id)
 
@@ -208,6 +208,7 @@ class UserViewsTestCase(TestCase):
             function to confirm it can also unlike 
             messaages.
         """
+        self.setup_likes()
         m = Message.query.filter(Message.text == "real recognize real").one()
         self.assertIsNotNone(m)
         self.assertNotEqual(m.user_id, self.testuser_id)
@@ -225,7 +226,7 @@ class UserViewsTestCase(TestCase):
             resp = c.post(f"/messages/{m.id}/like", follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
 
-            likes = Likes.query.filter(likes.message_id == m.id).all()
+            likes = Likes.query.filter(Likes.message_id == m.id).all()
             # Nothing that this message has been unliked, we expect to get 
             # a length of 0 for likes
             self.assertEqual(len(likes), 0)
@@ -263,8 +264,8 @@ class UserViewsTestCase(TestCase):
         f2 = Follows(user_being_followed_id=self.u2id, user_following_id=self.testuser_id)
         f3 = Follows(user_being_followed_id=self.testuser_id, user_following_id=self.u1id)
 
-        db.session.add(f1, f2, f3)
-        db.commit()
+        db.session.add_all([f1, f2, f3])
+        db.session.commit()
 
     def test_user_show_with_follows(self):
         """This test method, test to confirm that the right number of 

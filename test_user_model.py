@@ -86,7 +86,7 @@ class UserModelTestCase(TestCase):
     def test_repr_method(self):
         """This test will make sure that the repr method works"""
 
-        repr_u1 = self.user1.__repr__
+        repr_u1 = self.user1.__repr__()
 
         self.assertEqual(repr_u1, '<User #1111: user1, user1@test.com>')
 
@@ -170,7 +170,7 @@ class UserModelTestCase(TestCase):
     def test_user_invalid_password(self):
         """This test method tests for an invalid password"""
 
-        with self.assertRaises(exc.ValueError) as context:
+        with self.assertRaises(ValueError) as context:
             User.signup("testuser", "testUser@unittest.com", "", None)
 
 

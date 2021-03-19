@@ -71,7 +71,6 @@ class MessageViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 302)
 
             msg = Message.query.one()
-            print(msg)
             self.assertEqual(msg.text, "Hello")
             
     def test_unauthorized_add_message(self):
@@ -146,7 +145,8 @@ class MessageViewTestCase(TestCase):
             with c.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.testuser_id
             
-            resp = c.post(f"/messages/{m.id}/delete", follow_redirects=True)
+            
+            resp = c.post("/messages/1234/delete", follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
 
             m = Message.query.get(1234)
@@ -181,12 +181,12 @@ class MessageViewTestCase(TestCase):
             with c.session_transaction() as sess:
                 sess[CURR_USER_KEY] = 1777
             
-            resp = c.post(f"/messages/{m.id}/delete", follow_redirects=True)
+            resp = c.post("/messages/1234/delete", follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
-            self.assertIn("Access unauthorized", str(resp.data))
+            self.assertIn("Access unauthorized.", str(resp.data))
 
             m = Message.query.get(1234)
-            self.assertIsNone(m)
+            self.assertIsNotNone(m)
 
     
     def test_message_delete_no_authentication(self):
